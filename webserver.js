@@ -1,12 +1,23 @@
 const express = require('express');
-
+const bodyParser = require('body-parser');
 const session = require('express-session');
 const memoryStore = new session.MemoryStore;
 
 const app = express();
 const authApp = express.Router();
 
-const port = 8080;
+const port = 8082;
+
+
+// parse request body
+app.use(bodyParser());
+
+// CORS
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
+    next();
+});
 
 //middleware for logging
 app.use(function (req, res, next) {
@@ -45,7 +56,17 @@ app.get('/test', function (req, res) {
 
 //provide json api
 app.set('json spaces', 2);
+
+
 app.get('/api', function (req, res) {
+    res.json({name: 'John Doe', attr: {age: 30, sex: 'male'}});
+});
+
+app.post('/api', function (req, res) {
+
+    const posted = req.body;
+    console.log('request body=' + JSON.stringify(posted));
+
     res.json({name: 'John Doe', attr: {age: 30, sex: 'male'}});
 });
 
